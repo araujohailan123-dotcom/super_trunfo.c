@@ -4,6 +4,7 @@ struct Carta {
     char estado;
     char codigo[5];
     char nomecidade[50];
+    int opcao;
     unsigned long int populacao;
     float area;
     float pib;
@@ -32,14 +33,14 @@ float calcularSuperPoder(struct Carta c) {
 
 int main() {
 
-    struct Carta carta1, carta2;
+struct Carta carta1, carta2;
 
     // Carta 1
     printf("=-= Cadastro da Carta 01 =-=\n");
     printf("Estado: ");
     scanf(" %c", &carta1.estado);
 
-    printf("Codigo: ");
+    printf("Codigo:\n ");
     scanf("%4s", carta1.codigo);
 
     printf("Nome da cidade: ");
@@ -66,7 +67,7 @@ int main() {
     printf("Estado: ");
     scanf(" %c", &carta2.estado);
 
-    printf("Codigo: ");
+    printf("Codigo:\n ");
     scanf("%4s", carta2.codigo);
 
     printf("Nome da cidade: ");
@@ -88,29 +89,142 @@ int main() {
     carta2.pibPerCapita = calcularPibPerCapita(carta2.pib, carta2.populacao);
     carta2.superPoder = calcularSuperPoder(carta2);
 
-    // Comparações
-    printf("\n=== Comparacao de Cartas ===\n");
+    // ================= MENU DE COMPARAÇÃO =================
 
-    printf("Populacao: Carta 1 venceu (%d)\n",
-           carta1.populacao > carta2.populacao);
+int atributo1, atributo2;
+float valor1_c1 = 0, valor1_c2 = 0;
+float valor2_c1 = 0, valor2_c2 = 0;
+float soma1 = 0, soma2 = 0;
 
-    printf("Area: Carta 1 venceu (%d)\n",
-           carta1.area > carta2.area);
+printf("\n=== MENU DE COMPARACAO ===\n");
+printf("1 - Populacao\n");
+printf("2 - Area\n");
+printf("3 - PIB\n");
+printf("4 - Pontos Turisticos\n");
+printf("5 - Densidade Demografica\n");
 
-    printf("PIB: Carta 1 venceu (%d)\n",
-           carta1.pib > carta2.pib);
+printf("Escolha o PRIMEIRO atributo: ");
+scanf("%d", &atributo1);
 
-    printf("Pontos Turisticos: Carta 1 venceu (%d)\n",
-           carta1.pontoturistico > carta2.pontoturistico);
-
-    printf("Densidade Populacional: Carta 1 venceu (%d)\n",
-           carta1.densidade < carta2.densidade);
-
-    printf("PIB per Capita: Carta 1 venceu (%d)\n",
-           carta1.pibPerCapita > carta2.pibPerCapita);
-
-    printf("Super Poder: Carta 1 venceu (%d)\n",
-           carta1.superPoder > carta2.superPoder);
-
+// Validação básica
+if (atributo1 < 1 || atributo1 > 5) {
+    printf("Opcao invalida!\n");
     return 0;
 }
+
+// ===== MENU DINÂMICO PARA SEGUNDO ATRIBUTO =====
+
+printf("\nEscolha o SEGUNDO atributo (diferente do primeiro):\n");
+
+switch(atributo1) {
+    case 1:
+        printf("2 - Area\n3 - PIB\n4 - Pontos Turisticos\n5 - Densidade Demografica\n");
+        break;
+    case 2:
+        printf("1 - Populacao\n3 - PIB\n4 - Pontos Turisticos\n5 - Densidade Demografica\n");
+        break;
+    case 3:
+        printf("1 - Populacao\n2 - Area\n4 - Pontos Turisticos\n5 - Densidade Demografica\n");
+        break;
+    case 4:
+        printf("1 - Populacao\n2 - Area\n3 - PIB\n5 - Densidade Demografica\n");
+        break;
+    case 5:
+        printf("1 - Populacao\n2 - Area\n3 - PIB\n4 - Pontos Turisticos\n");
+        break;
+}
+
+scanf("%d", &atributo2);
+
+// Impede escolha repetida
+if (atributo2 == atributo1 || atributo2 < 1 || atributo2 > 5) {
+    printf("Opcao invalida!\n");
+    return 0;
+}
+
+// ===== FUNÇÃO DE SELEÇÃO VIA SWITCH =====
+
+switch(atributo1) {
+    case 1:
+        valor1_c1 = carta1.populacao;
+        valor1_c2 = carta2.populacao;
+        break;
+    case 2:
+        valor1_c1 = carta1.area;
+        valor1_c2 = carta2.area;
+        break;
+    case 3:
+        valor1_c1 = carta1.pib;
+        valor1_c2 = carta2.pib;
+        break;
+    case 4:
+        valor1_c1 = carta1.pontoturistico;
+        valor1_c2 = carta2.pontoturistico;
+        break;
+    case 5:
+        valor1_c1 = carta1.densidade;
+        valor1_c2 = carta2.densidade;
+        break;
+}
+
+switch(atributo2) {
+    case 1:
+        valor2_c1 = carta1.populacao;
+        valor2_c2 = carta2.populacao;
+        break;
+    case 2:
+        valor2_c1 = carta1.area;
+        valor2_c2 = carta2.area;
+        break;
+    case 3:
+        valor2_c1 = carta1.pib;
+        valor2_c2 = carta2.pib;
+        break;
+    case 4:
+        valor2_c1 = carta1.pontoturistico;
+        valor2_c2 = carta2.pontoturistico;
+        break;
+    case 5:
+        valor2_c1 = carta1.densidade;
+        valor2_c2 = carta2.densidade;
+        break;
+}
+
+// ===== REGRA ESPECIAL DENSIDADE =====
+
+if (atributo1 == 5) {
+    valor1_c1 = 1 / valor1_c1;
+    valor1_c2 = 1 / valor1_c2;
+}
+
+if (atributo2 == 5) {
+    valor2_c1 = 1 / valor2_c1;
+    valor2_c2 = 1 / valor2_c2;
+}
+
+// ===== SOMA DOS ATRIBUTOS =====
+
+soma1 = valor1_c1 + valor2_c1;
+soma2 = valor1_c2 + valor2_c2;
+
+// ===== EXIBIÇÃO DO RESULTADO =====
+
+printf("\n=== RESULTADO DA RODADA ===\n");
+printf("Carta 1: %s\n", carta1.nomecidade);
+printf("Carta 2: %s\n\n", carta2.nomecidade);
+
+printf("Soma dos atributos:\n");
+printf("%s: %.2f\n", carta1.nomecidade, soma1);
+printf("%s: %.2f\n\n", carta2.nomecidade, soma2);
+
+// ===== OPERADOR TERNÁRIO PARA DEFINIR VENCEDOR =====
+
+if (soma1 == soma2) {
+    printf("Empate!\n");
+} else {
+    char *vencedor = (soma1 > soma2) ? carta1.nomecidade : carta2.nomecidade;
+    printf("Vencedor: %s\n", vencedor);
+}
+}
+}
+
